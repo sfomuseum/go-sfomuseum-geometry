@@ -1,0 +1,9 @@
+# github.com/paulmach/orb v0.2.2
+## explicit
+github.com/paulmach/orb
+github.com/paulmach/orb/encoding/wkb
+github.com/paulmach/orb/encoding/wkt
+github.com/paulmach/orb/geojson
+# github.com/paulsmith/gogeos v0.1.2
+## explicit
+github.com/paulsmith/gogeos/geos
