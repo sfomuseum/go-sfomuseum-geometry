@@ -51,7 +51,7 @@ func main() {
 		log.Fatalf("Failed to parse %s, %v", *clip_path, err)
 	}
 
-	new_fc, err := geometry.ClipFeatureCollection(ctx, source_fc, clip_fc)
+	new_fc, err := geometry.DifferenceFeatureCollection(ctx, source_fc, clip_fc)
 
 	if err != nil {
 		log.Fatalf("Failed to union %v", err)

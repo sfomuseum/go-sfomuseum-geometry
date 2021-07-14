@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/sfomuseum/go-sfomuseum-geometry"	
 	"context"
 	"flag"
 	"fmt"
 	"github.com/paulmach/orb/geojson"
+	"github.com/sfomuseum/go-sfomuseum-geometry"
 	"io"
 	"log"
 	"os"

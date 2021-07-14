@@ -76,12 +76,12 @@ func UnionFeatureCollection(ctx context.Context, cols ...*geojson.FeatureCollect
 	}
 
 	new_props := map[string]interface{}{
-		"hello":"world",
+		"hello": "world",
 	}
-	
+
 	new_f := geojson.NewFeature(orb_geom)
 	new_f.Properties = new_props
-	
+
 	new_fc.Append(new_f)
 
 	return new_fc, nil
