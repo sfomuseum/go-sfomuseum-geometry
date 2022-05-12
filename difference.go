@@ -7,6 +7,7 @@ import (
 	"log"
 )
 
+// DifferenceFeatureCollection returns a `geojson.FeatureCollection` representing the difference between the first (Feature) elements 'source_fc' and 'clip_fc'.
 func DifferenceFeatureCollection(ctx context.Context, source_fc *geojson.FeatureCollection, clip_fc *geojson.FeatureCollection) (*geojson.FeatureCollection, error) {
 
 	source_fc, err := UnionFeatureCollection(ctx, source_fc)
@@ -58,7 +59,7 @@ func DifferenceFeatureCollection(ctx context.Context, source_fc *geojson.Feature
 
 	if orb_geom.GeoJSONType() == "GeometryCollection" {
 
-		log.Println("WARNING difference-ed geometry returned as GeometryCollection\n")
+		log.Printf("WARNING difference-ed geometry returned as GeometryCollection\n")
 
 		mp := make([]orb.Polygon, 0)
 

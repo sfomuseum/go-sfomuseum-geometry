@@ -5,6 +5,7 @@ import (
 	"github.com/paulmach/orb/geojson"
 )
 
+// ContainedBy returns the list of `geojson.Feature` instances from 'candidates' that contain 'f'.
 func ContainedBy(ctx context.Context, f *geojson.Feature, candidates ...*geojson.Feature) ([]*geojson.Feature, error) {
 
 	contained_by := make([]*geojson.Feature, 0)
@@ -25,6 +26,7 @@ func ContainedBy(ctx context.Context, f *geojson.Feature, candidates ...*geojson
 	return contained_by, nil
 }
 
+// IsContainedBy returns a boolean flag indicating whether 'f2' contains 'f1'.
 func isContainedBy(ctx context.Context, f1 *geojson.Feature, f2 *geojson.Feature) (bool, error) {
 
 	f1_geom, err := OrbGeometryToGeosGeometry(ctx, f1.Geometry)

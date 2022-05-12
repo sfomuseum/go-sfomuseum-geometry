@@ -7,6 +7,7 @@ import (
 	"log"
 )
 
+// ClipFeatureCollection returns a `geojson.FeatureCollection` instance representing the intersection of 'source_fc' and 'clip_fc'.
 func ClipFeatureCollection(ctx context.Context, source_fc *geojson.FeatureCollection, clip_fc *geojson.FeatureCollection) (*geojson.FeatureCollection, error) {
 
 	source_fc, err := UnionFeatureCollection(ctx, source_fc)
@@ -58,7 +59,7 @@ func ClipFeatureCollection(ctx context.Context, source_fc *geojson.FeatureCollec
 
 	if orb_geom.GeoJSONType() == "GeometryCollection" {
 
-		log.Println("WARNING clipped geometry returned as GeometryCollection\n")
+		log.Printf("WARNING clipped geometry returned as GeometryCollection\n")
 
 		mp := make([]orb.Polygon, 0)
 

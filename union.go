@@ -9,6 +9,8 @@ import (
 
 // debug
 
+// UnionFeatureCollection returns a `geojson.FeatureCollection` instance with a single feature representing the union
+// of all the features in 'cols'
 func UnionFeatureCollection(ctx context.Context, cols ...*geojson.FeatureCollection) (*geojson.FeatureCollection, error) {
 
 	var features []*geojson.Feature

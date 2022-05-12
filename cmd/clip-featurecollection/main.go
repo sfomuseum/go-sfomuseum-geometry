@@ -16,7 +16,7 @@ func featureCollection(path string) (*geojson.FeatureCollection, error) {
 	fh, err := os.Open(path)
 
 	if err != nil {
-		fmt.Errorf("Failed to open %s, %v", path, err)
+		return nil, fmt.Errorf("Failed to open %s, %w", path, err)
 	}
 
 	defer fh.Close()
@@ -24,7 +24,7 @@ func featureCollection(path string) (*geojson.FeatureCollection, error) {
 	body, err := io.ReadAll(fh)
 
 	if err != nil {
-		fmt.Errorf("Failed to read %s, %v", path, err)
+		return nil, fmt.Errorf("Failed to read %s, %w", path, err)
 	}
 
 	return geojson.UnmarshalFeatureCollection(body)

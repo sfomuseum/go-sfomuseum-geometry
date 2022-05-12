@@ -11,11 +11,13 @@ import (
 	"github.com/paulsmith/gogeos/geos"
 )
 
+// OrbGeometryToGeosGeometry converts an `orb.Geometry` instance in to a `geos.Geometry` instance.
 func OrbGeometryToGeosGeometry(ctx context.Context, orb_geom orb.Geometry) (*geos.Geometry, error) {
 	str_wkt := wkt.MarshalString(orb_geom)
 	return geos.FromWKT(str_wkt)
 }
 
+// GeosGeometryToOrbGeometry converts a `geos.Geometry`	instance in to an `orb.Geometry` instance.
 func GeosGeometryToOrbGeometry(ctx context.Context, geos_geom *geos.Geometry) (orb.Geometry, error) {
 
 	wkb_body, err := geos_geom.WKB()
@@ -30,6 +32,7 @@ func GeosGeometryToOrbGeometry(ctx context.Context, geos_geom *geos.Geometry) (o
 	return dec.Decode()
 }
 
+// DifferenceGeometriesWithFeatures returns a `geojson.Feature` instance representing the difference between 'base' and 'others'.
 func DifferenceGeometriesWithFeatures(ctx context.Context, base *geojson.Feature, others ...*geojson.Feature) (*geojson.Feature, error) {
 
 	base_geom, err := OrbGeometryToGeosGeometry(ctx, base.Geometry)
@@ -69,6 +72,7 @@ func DifferenceGeometriesWithFeatures(ctx context.Context, base *geojson.Feature
 	return new_f, nil
 }
 
+// DifferenceGeometries returns a `geos.Geometry` instance representing the difference between 'base' and 'others'.
 func DifferenceGeometries(ctx context.Context, base_geom *geos.Geometry, other_geoms ...*geos.Geometry) (*geos.Geometry, error) {
 
 	to_remove, err := geos.EmptyPolygon()

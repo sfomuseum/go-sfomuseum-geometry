@@ -5,6 +5,7 @@ import (
 	"github.com/paulmach/orb/geojson"
 )
 
+// CentroidWithFeature return the centroid for 'f' as determined by GEOS.
 func CentroidWithFeature(ctx context.Context, f *geojson.Feature) (float64, float64, error) {
 
 	geos_geom, err := OrbGeometryToGeosGeometry(ctx, f.Geometry)
