@@ -4,6 +4,7 @@ package geometry
 import (
 	"bytes"
 	"context"
+	
 	"github.com/paulmach/orb"
 	"github.com/paulmach/orb/encoding/wkb"
 	"github.com/paulmach/orb/encoding/wkt"

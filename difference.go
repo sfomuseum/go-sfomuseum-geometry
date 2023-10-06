@@ -2,9 +2,10 @@ package geometry
 
 import (
 	"context"
-	"github.com/paulmach/orb"
-	"github.com/paulmach/orb/geojson"
 	"log"
+
+	"github.com/paulmach/orb"
+	"github.com/paulmach/orb/geojson"	
 )
 
 // DifferenceFeatureCollection returns a `geojson.FeatureCollection` representing the difference between the first (Feature) elements 'source_fc' and 'clip_fc'.

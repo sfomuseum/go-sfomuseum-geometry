@@ -2,9 +2,10 @@ package geometry
 
 import (
 	"context"
-	"github.com/paulmach/orb"
-	"github.com/paulmach/orb/geojson"
 	"log"
+
+	"github.com/paulmach/orb"
+	"github.com/paulmach/orb/geojson"	
 )
 
 // ClipFeatureCollection returns a `geojson.FeatureCollection` instance representing the intersection of 'source_fc' and 'clip_fc'.

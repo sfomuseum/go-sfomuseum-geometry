@@ -2,6 +2,7 @@ package geometry
 
 import (
 	"context"
+	
 	"github.com/paulmach/orb/geojson"
 )
 

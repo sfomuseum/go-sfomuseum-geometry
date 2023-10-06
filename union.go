@@ -2,9 +2,10 @@ package geometry
 
 import (
 	"context"
-	"github.com/paulmach/orb/geojson"
-	"github.com/paulsmith/gogeos/geos"
 	"log"
+
+	"github.com/paulmach/orb/geojson"
+	"github.com/paulsmith/gogeos/geos"	
 )
 
 // debug
