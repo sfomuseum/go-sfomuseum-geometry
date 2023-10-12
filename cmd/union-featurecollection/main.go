@@ -10,7 +10,6 @@ import (
 
 	"github.com/paulmach/orb/geojson"
 	"github.com/sfomuseum/go-sfomuseum-geometry"
-	
 )
 
 func main() {

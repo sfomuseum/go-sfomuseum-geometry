@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/paulmach/orb"
-	"github.com/paulmach/orb/geojson"	
+	"github.com/paulmach/orb/geojson"
 )
 
 // DifferenceFeatureCollection returns a `geojson.FeatureCollection` representing the difference between the first (Feature) elements 'source_fc' and 'clip_fc'.
@@ -38,11 +38,15 @@ func DifferenceFeatureCollection(ctx context.Context, source_fc *geojson.Feature
 		return nil, err
 	}
 
-	new_geom, err := source_geom.Difference(clip_geom)
+	/*
+		new_geom, err := source_geom.Difference(clip_geom)
 
-	if err != nil {
-		return nil, err
-	}
+		if err != nil {
+			return nil, err
+		}
+	*/
+
+	new_geom := source_geom.Difference(clip_geom)
 
 	/*
 		_, err = new_geom.Type()

@@ -9,7 +9,7 @@ import (
 	"os"
 
 	"github.com/paulmach/orb/geojson"
-	"github.com/sfomuseum/go-sfomuseum-geometry"	
+	"github.com/sfomuseum/go-sfomuseum-geometry"
 )
 
 func featureCollection(path string) (*geojson.FeatureCollection, error) {

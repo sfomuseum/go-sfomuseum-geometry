@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/paulmach/orb"
-	"github.com/paulmach/orb/geojson"	
+	"github.com/paulmach/orb/geojson"
 )
 
 // ClipFeatureCollection returns a `geojson.FeatureCollection` instance representing the intersection of 'source_fc' and 'clip_fc'.
@@ -38,17 +38,24 @@ func ClipFeatureCollection(ctx context.Context, source_fc *geojson.FeatureCollec
 		return nil, err
 	}
 
-	new_geom, err := source_geom.Intersection(clip_geom)
+	/*
+		new_geom, err := source_geom.Intersection(clip_geom)
 
-	if err != nil {
-		return nil, err
-	}
+		if err != nil {
+			return nil, err
+		}
 
-	t, err := new_geom.Type()
+		t, err := new_geom.Type()
 
-	if err != nil {
-		return nil, err
-	}
+		if err != nil {
+			return nil, err
+		}
+
+	*/
+
+	new_geom := source_geom.Intersection(clip_geom)
+
+	t := new_geom.Type()
 
 	log.Println("NEW", t)
 

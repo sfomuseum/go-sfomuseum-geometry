@@ -2,7 +2,7 @@ package geometry
 
 import (
 	"context"
-	
+
 	"github.com/paulmach/orb/geojson"
 )
 
@@ -18,23 +18,31 @@ func CentroidWithFeature(ctx context.Context, f *geojson.Feature) (float64, floa
 	// What we really want is this...
 	// https://github.com/mbloch/mapshaper/blob/4a1eac2845420472bb23df863723aa8e3021ced2/src/points/mapshaper-anchor-points.js
 
-	centroid, err := geos_geom.Centroid()
+	/*
+		centroid, err := geos_geom.Centroid()
 
-	if err != nil {
-		return 0.0, 0.0, err
-	}
+		if err != nil {
+			return 0.0, 0.0, err
+		}
 
-	lon, err := centroid.X()
+		lon, err := centroid.X()
 
-	if err != nil {
-		return 0.0, 0.0, err
-	}
+		if err != nil {
+			return 0.0, 0.0, err
+		}
 
-	lat, err := centroid.Y()
+		lat, err := centroid.Y()
 
-	if err != nil {
-		return 0.0, 0.0, err
-	}
+		if err != nil {
+			return 0.0, 0.0, err
+		}
+
+	*/
+
+	centroid := geos_geom.Centroid()
+
+	lon := centroid.X()
+	lat := centroid.Y()
 
 	return lon, lat, nil
 }
