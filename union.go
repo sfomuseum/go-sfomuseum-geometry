@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/paulmach/orb/geojson"
-	"github.com/paulsmith/gogeos/geos"	
+	"github.com/twpayne/go-geos"
 )
 
 // debug

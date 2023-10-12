@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/paulmach/orb v0.10.0
-	github.com/paulsmith/gogeos v0.1.2
+	github.com/twpayne/go-geos v0.13.2
 )
 
 require go.mongodb.org/mongo-driver v1.11.4 // indirect

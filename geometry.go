@@ -9,7 +9,7 @@ import (
 	"github.com/paulmach/orb/encoding/wkb"
 	"github.com/paulmach/orb/encoding/wkt"
 	"github.com/paulmach/orb/geojson"
-	"github.com/paulsmith/gogeos/geos"
+	"github.com/twpayne/go-geos"
 )
 
 // OrbGeometryToGeosGeometry converts an `orb.Geometry` instance in to a `geos.Geometry` instance.
