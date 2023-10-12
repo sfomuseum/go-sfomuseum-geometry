@@ -4,27 +4,24 @@ package geometry
 import (
 	"bytes"
 	"context"
+
 	"github.com/paulmach/orb"
 	"github.com/paulmach/orb/encoding/wkb"
 	"github.com/paulmach/orb/encoding/wkt"
 	"github.com/paulmach/orb/geojson"
-	"github.com/paulsmith/gogeos/geos"
+	"github.com/twpayne/go-geos"
 )
 
-// OrbGeometryToGeosGeometry converts an `orb.Geometry` instance in to a `geos.Geometry` instance.
-func OrbGeometryToGeosGeometry(ctx context.Context, orb_geom orb.Geometry) (*geos.Geometry, error) {
+// OrbGeometryToGeosGeometry converts an `orb.Geometry` instance in to a `geos.Geom` instance.
+func OrbGeometryToGeosGeometry(ctx context.Context, orb_geom orb.Geometry) (*geos.Geom, error) {
 	str_wkt := wkt.MarshalString(orb_geom)
-	return geos.FromWKT(str_wkt)
+	return geos.NewGeomFromWKT(str_wkt)
 }
 
-// GeosGeometryToOrbGeometry converts a `geos.Geometry`	instance in to an `orb.Geometry` instance.
-func GeosGeometryToOrbGeometry(ctx context.Context, geos_geom *geos.Geometry) (orb.Geometry, error) {
+// GeosGeometryToOrbGeometry converts a `geos.Geom`	instance in to an `orb.Geometry` instance.
+func GeosGeometryToOrbGeometry(ctx context.Context, geos_geom *geos.Geom) (orb.Geometry, error) {
 
-	wkb_body, err := geos_geom.WKB()
-
-	if err != nil {
-		return nil, err
-	}
+	wkb_body := geos_geom.ToWKB()
 
 	br := bytes.NewReader(wkb_body)
 
@@ -41,7 +38,7 @@ func DifferenceGeometriesWithFeatures(ctx context.Context, base *geojson.Feature
 		return nil, err
 	}
 
-	other_geoms := make([]*geos.Geometry, len(others))
+	other_geoms := make([]*geos.Geom, len(others))
 
 	for idx, f := range others {
 
@@ -72,31 +69,18 @@ func DifferenceGeometriesWithFeatures(ctx context.Context, base *geojson.Feature
 	return new_f, nil
 }
 
-// DifferenceGeometries returns a `geos.Geometry` instance representing the difference between 'base' and 'others'.
-func DifferenceGeometries(ctx context.Context, base_geom *geos.Geometry, other_geoms ...*geos.Geometry) (*geos.Geometry, error) {
+// DifferenceGeometries returns a `geos.Geom` instance representing the difference between 'base' and 'others'.
+func DifferenceGeometries(ctx context.Context, base_geom *geos.Geom, other_geoms ...*geos.Geom) (*geos.Geom, error) {
 
-	to_remove, err := geos.EmptyPolygon()
-
-	if err != nil {
-		return nil, err
-	}
+	to_remove := geos.NewEmptyPolygon()
 
 	for _, g := range other_geoms {
 
-		new_geom, err := to_remove.Union(g)
-
-		if err != nil {
-			return nil, err
-		}
-
+		new_geom := to_remove.Union(g)
 		to_remove = new_geom
 	}
 
-	new_geom, err := base_geom.Difference(to_remove)
-
-	if err != nil {
-		return nil, err
-	}
+	new_geom := base_geom.Difference(to_remove)
 
 	return new_geom, nil
 }

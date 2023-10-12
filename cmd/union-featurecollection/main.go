@@ -4,11 +4,12 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/paulmach/orb/geojson"
-	"github.com/sfomuseum/go-sfomuseum-geometry"
 	"io"
 	"log"
 	"os"
+
+	"github.com/paulmach/orb/geojson"
+	"github.com/sfomuseum/go-sfomuseum-geometry"
 )
 
 func main() {

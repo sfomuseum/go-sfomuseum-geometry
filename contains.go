@@ -2,6 +2,7 @@ package geometry
 
 import (
 	"context"
+
 	"github.com/paulmach/orb/geojson"
 )
 
@@ -43,5 +44,5 @@ func isContainedBy(ctx context.Context, f1 *geojson.Feature, f2 *geojson.Feature
 
 	// Contains returns true if every point of the other is a point of this geometry, and the interiors of the two geometries have at least one point in common.
 
-	return f2_geom.Contains(f1_geom)
+	return f2_geom.Contains(f1_geom), nil
 }
