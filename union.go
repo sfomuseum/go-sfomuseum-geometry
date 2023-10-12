@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/paulmach/orb/geojson"
-	"github.com/twpayne/go-geos"
+	_ "github.com/twpayne/go-geos"
 )
 
 // debug
@@ -50,21 +50,13 @@ func UnionFeatureCollection(ctx context.Context, cols ...*geojson.FeatureCollect
 			return nil, err
 		}
 
-		g, err := new_geom.Union(geos_g)
+		g := new_geom.Union(geos_g)
 
-		if err != nil {
-			return nil, err
-		}
-
-		t, err := g.Type()
-
-		if err != nil {
-			return nil, err
-		}
+		t := g.Type()
 
 		// But why? (20210329/thisisaaronland)
 
-		if t == geos.GEOMETRYCOLLECTION {
+		if t == "GEOMETRYCOLLECTION" {
 			log.Printf("WARNING feature %d causes union to produce a GeometryCollection, skipping\n", idx)
 			continue
 		}
