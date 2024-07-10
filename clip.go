@@ -2,7 +2,8 @@ package geometry
 
 import (
 	"context"
-	"log"
+	"fmt"
+	"log/slog"
 
 	"github.com/paulmach/orb"
 	"github.com/paulmach/orb/geojson"
@@ -14,13 +15,13 @@ func ClipFeatureCollection(ctx context.Context, source_fc *geojson.FeatureCollec
 	source_fc, err := UnionFeatureCollection(ctx, source_fc)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to union source feature collection, %w", err)
 	}
 
 	clip_fc, err = UnionFeatureCollection(ctx, clip_fc)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to union clip feature collection, %w", err)
 	}
 
 	source_f := source_fc.Features[0]
@@ -29,45 +30,28 @@ func ClipFeatureCollection(ctx context.Context, source_fc *geojson.FeatureCollec
 	source_geom, err := OrbGeometryToGeosGeometry(ctx, source_f.Geometry)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to derive GEOS geometry for source feature (offset 0), %w", err)
 	}
 
 	clip_geom, err := OrbGeometryToGeosGeometry(ctx, clip_f.Geometry)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to derive GEOS geometry for clip feature (offset 0), %w", err)
 	}
-
-	/*
-		new_geom, err := source_geom.Intersection(clip_geom)
-
-		if err != nil {
-			return nil, err
-		}
-
-		t, err := new_geom.Type()
-
-		if err != nil {
-			return nil, err
-		}
-
-	*/
 
 	new_geom := source_geom.Intersection(clip_geom)
 
-	t := new_geom.Type()
-
-	log.Println("NEW", t)
+	// t := new_geom.Type()
 
 	orb_geom, err := GeosGeometryToOrbGeometry(ctx, new_geom)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to derive Orb geometry for new geometry, %w", err)
 	}
 
 	if orb_geom.GeoJSONType() == "GeometryCollection" {
 
-		log.Printf("WARNING clipped geometry returned as GeometryCollection\n")
+		slog.Warn("Clipped geometry returned as GeometryCollection\n")
 
 		mp := make([]orb.Polygon, 0)
 
@@ -83,7 +67,7 @@ func ClipFeatureCollection(ctx context.Context, source_fc *geojson.FeatureCollec
 					mp = append(mp, p)
 				}
 			default:
-				log.Printf("WARNING geometry %d is a %s, skipping", idx, t)
+				slog.Warn("Invalid geometry", "offset", idx, "type", t)
 			}
 		}
 

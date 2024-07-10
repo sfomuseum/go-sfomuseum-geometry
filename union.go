@@ -2,12 +2,14 @@ package geometry
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 
 	"github.com/paulmach/orb/geojson"
 	_ "github.com/twpayne/go-geos"
 )
 
+// UnionFeatures returns a `geojson.Feature` instance representing the union of all the features in 'features'
 func UnionFeatures(ctx context.Context, features ...*geojson.Feature) (*geojson.Feature, error) {
 
 	first := features[0]
@@ -16,7 +18,7 @@ func UnionFeatures(ctx context.Context, features ...*geojson.Feature) (*geojson.
 	new_geom, err := OrbGeometryToGeosGeometry(ctx, orb_geom)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to derive GEOS geometry for feature (offset 0), %w", err)
 	}
 
 	for idx, f := range features[1:] {
@@ -24,7 +26,7 @@ func UnionFeatures(ctx context.Context, features ...*geojson.Feature) (*geojson.
 		geos_g, err := OrbGeometryToGeosGeometry(ctx, f.Geometry)
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Failed to derive GEOS geometry for feature (offset %d), %w", idx, err)
 		}
 
 		g := new_geom.Union(geos_g)
@@ -44,7 +46,7 @@ func UnionFeatures(ctx context.Context, features ...*geojson.Feature) (*geojson.
 	orb_geom, err = GeosGeometryToOrbGeometry(ctx, new_geom)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to derive Orb geometry for new geometry, %w", err)
 	}
 
 	new_props := map[string]interface{}{

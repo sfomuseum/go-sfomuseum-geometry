@@ -2,6 +2,7 @@ package geometry
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/paulmach/orb/geojson"
 )
@@ -12,7 +13,7 @@ func CentroidWithFeature(ctx context.Context, f *geojson.Feature) (float64, floa
 	geos_geom, err := OrbGeometryToGeosGeometry(ctx, f.Geometry)
 
 	if err != nil {
-		return 0.0, 0.0, err
+		return 0.0, 0.0, fmt.Errorf("Failed to derive GEOS geometry for feature, %w", err)
 	}
 
 	// What we really want is this...
