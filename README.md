@@ -8,7 +8,7 @@ Go package for manipulating geometries, in a SFO Museum context.
 
 ## Important
 
-Among the dependencies is the [twpayne/go-geos](twpayne/go-geos) package.
+Among the dependencies is the [twpayne/go-geos](twpayne/go-geos) package which, in turn, requires that the `geos` library be present.
 
 Tests are stubbed out but not implemented yet.
 

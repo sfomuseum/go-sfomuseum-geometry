@@ -1,12 +1,12 @@
-# github.com/paulmach/orb v0.10.0
+# github.com/paulmach/orb v0.11.1
 ## explicit; go 1.15
 github.com/paulmach/orb
 github.com/paulmach/orb/encoding/internal/wkbcommon
 github.com/paulmach/orb/encoding/wkb
 github.com/paulmach/orb/encoding/wkt
 github.com/paulmach/orb/geojson
-# github.com/twpayne/go-geos v0.13.2
-## explicit; go 1.18
+# github.com/twpayne/go-geos v0.18.0
+## explicit; go 1.21
 github.com/twpayne/go-geos
 # go.mongodb.org/mongo-driver v1.11.4
 ## explicit; go 1.13

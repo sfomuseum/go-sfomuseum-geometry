@@ -2,6 +2,7 @@ package geometry
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/paulmach/orb/geojson"
 )
@@ -33,13 +34,13 @@ func isContainedBy(ctx context.Context, f1 *geojson.Feature, f2 *geojson.Feature
 	f1_geom, err := OrbGeometryToGeosGeometry(ctx, f1.Geometry)
 
 	if err != nil {
-		return false, err
+		return false, fmt.Errorf("Failed to derive GEOS geometry, %w", err)
 	}
 
 	f2_geom, err := OrbGeometryToGeosGeometry(ctx, f2.Geometry)
 
 	if err != nil {
-		return false, err
+		return false, fmt.Errorf("Failed to derive GEOS geometry, %w", err)
 	}
 
 	// Contains returns true if every point of the other is a point of this geometry, and the interiors of the two geometries have at least one point in common.
