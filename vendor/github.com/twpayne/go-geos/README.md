@@ -95,6 +95,19 @@ by GEOS and are willing to handle memory management manually. `go-geom` is
 recommended for long-running processes with less stringent geometry function
 requirements.
 
+## GEOS version compatibility
+
+`go-geos` is tested to work with the versions of `GEOS` tested on CI.
+See [here](.github/workflows/main.yml).
+
+Calling functions unsupported by the underlying `GEOS` library will result in a panic.
+Users can use [`VersionCompare`](https://pkg.go.dev/github.com/twpayne/go-geos#VersionCompare)
+to be sure that a function exists.
+
+## Contributing
+
+Please check [`CONTRIBUTING.md`](./CONTRIBUTING.md) for instructions before you open a pull-request!
+
 ## License
 
 MIT

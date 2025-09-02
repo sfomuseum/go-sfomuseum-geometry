@@ -1,4 +1,4 @@
-//go:generate go run ./internal/cmds/execute-template -data geommethods.yaml -output geommethods.go geommethods.go.tmpl
+//go:generate go tool execute-template -data geommethods.yaml -output geommethods.go geommethods.go.tmpl
 
 package geos
 
@@ -50,7 +50,7 @@ func (g *Geom) MakeValidWithParams(method MakeValidMethod, collapse MakeValidCol
 	g.mustNotBeDestroyed()
 	g.context.Lock()
 	defer g.context.Unlock()
-	cRes := C.c_GEOSMakeValidWithParams_r(g.context.handle, g.geom, (C.enum_GEOSMakeValidMethods)(method), (C.int)(collapse))
+	cRes := C.c_GEOSMakeValidWithParams_r(g.context.handle, g.geom, C.enum_GEOSMakeValidMethods(method), C.int(collapse))
 	return g.context.newGeom(cRes, nil)
 }
 
@@ -77,7 +77,7 @@ func (g *Geom) CoordSeq() *CoordSeq {
 	s := C.GEOSGeom_getCoordSeq_r(g.context.handle, g.geom)
 	// Don't set a finalizer as coordSeq is owned by g and will be finalized when g is
 	// finalized.
-	coordSeq := g.context.newCoordSeq(s, nil)
+	coordSeq := g.context.newCoordSeqInternal(s, nil)
 	if coordSeq == nil {
 		return nil
 	}
@@ -134,10 +134,6 @@ func (g *Geom) NearestPoints(other *Geom) [][]float64 {
 	g.mustNotBeDestroyed()
 	g.context.Lock()
 	defer g.context.Unlock()
-	if other.context != g.context {
-		other.context.Lock()
-		defer other.context.Unlock()
-	}
 	s := C.GEOSNearestPoints_r(g.context.handle, g.geom, other.geom)
 	if s == nil {
 		return nil
@@ -209,7 +205,7 @@ func (g *Geom) PolygonizeFull() (geom, cuts, dangles, invalidRings *Geom) {
 	cuts = g.context.newGeom(cCuts, nil)
 	dangles = g.context.newGeom(cDangles, nil)
 	invalidRings = g.context.newGeom(cInvalidRings, nil)
-	return
+	return geom, cuts, dangles, invalidRings
 }
 
 // Precision returns g's precision.
@@ -227,10 +223,6 @@ func (g *Geom) RelatePattern(other *Geom, pat string) bool {
 	defer C.free(unsafe.Pointer(patCStr))
 	g.context.Lock()
 	defer g.context.Unlock()
-	if other.context != g.context {
-		other.context.Lock()
-		defer other.context.Unlock()
-	}
 	switch C.GEOSRelatePattern_r(g.context.handle, g.geom, other.geom, patCStr) {
 	case 0:
 		return false
@@ -277,7 +269,7 @@ func (g *Geom) String() string {
 	return g.ToWKT()
 }
 
-// ToEWKB returns g in Extended WKB format with its SRID.
+// ToEWKBWithSRID returns g in Extended WKB format with its SRID.
 func (g *Geom) ToEWKBWithSRID() []byte {
 	g.mustNotBeDestroyed()
 	g.context.Lock()

@@ -28,7 +28,21 @@ func featureCollection(path string) (*geojson.FeatureCollection, error) {
 		return nil, fmt.Errorf("Failed to read %s, %w", path, err)
 	}
 
-	return geojson.UnmarshalFeatureCollection(body)
+	fc, err := geojson.UnmarshalFeatureCollection(body)
+
+	if err != nil {
+
+		f, err := geojson.UnmarshalFeature(body)
+
+		if err != nil {
+			return nil, err
+		}
+
+		fc = new(geojson.FeatureCollection)
+		fc.Append(f)
+	}
+
+	return fc, nil
 }
 
 func main() {

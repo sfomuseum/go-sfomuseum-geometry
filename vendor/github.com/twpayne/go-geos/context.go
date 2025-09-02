@@ -190,7 +190,7 @@ func (c *Context) NewGeomFromWKB(wkb []byte) (*Geom, error) {
 	}
 	wkbCBuf := C.CBytes(wkb)
 	defer C.free(wkbCBuf)
-	return c.newGeom(C.GEOSWKBReader_read_r(c.handle, c.wkbReader, (*C.uchar)(wkbCBuf), (C.ulong)(len(wkb))), nil), c.err
+	return c.newGeom(C.GEOSWKBReader_read_r(c.handle, c.wkbReader, (*C.uchar)(wkbCBuf), C.ulong(len(wkb))), nil), c.err
 }
 
 // NewGeomFromWKT parses a geometry in WKT format from wkt.
@@ -238,10 +238,9 @@ func (c *Context) NewPoints(coords [][]float64) []*Geom {
 	if coords == nil {
 		return nil
 	}
-	geoms := make([]*Geom, 0, len(coords))
-	for _, coord := range coords {
-		geom := c.NewPoint(coord)
-		geoms = append(geoms, geom)
+	geoms := make([]*Geom, len(coords))
+	for i := range geoms {
+		geoms[i] = c.NewPoint(coords[i])
 	}
 	return geoms
 }
@@ -271,13 +270,13 @@ func (c *Context) NewPolygon(coordss [][][]float64) *Geom {
 	var holes **C.struct_GEOSGeom_t
 	nholes := len(coordss) - 1
 	if nholes > 0 {
-		holesSlice = make([]*C.struct_GEOSGeom_t, 0, nholes)
-		for i := 0; i < nholes; i++ {
+		holesSlice = make([]*C.struct_GEOSGeom_t, nholes)
+		for i := range holesSlice {
 			hole := C.GEOSGeom_createLinearRing_r(c.handle, c.newGEOSCoordSeqFromCoords(coordss[i+1]))
 			if hole == nil {
 				panic(c.err)
 			}
-			holesSlice = append(holesSlice, hole)
+			holesSlice[i] = hole
 		}
 		holes = (**C.struct_GEOSGeom_t)(unsafe.Pointer(&holesSlice[0]))
 	}
@@ -299,10 +298,10 @@ func (c *Context) NewSTRtree(nodeCapacity int) *STRtree {
 }
 
 // OrientationIndex returns the orientation index from A to B and then to P.
-func (c *Context) OrientationIndex(Ax, Ay, Bx, By, Px, Py float64) int { //nolint:gocritic
+func (c *Context) OrientationIndex(ax, ay, bx, by, px, py float64) int {
 	c.Lock()
 	defer c.Unlock()
-	return int(C.GEOSOrientationIndex_r(c.handle, C.double(Ax), C.double(Ay), C.double(Bx), C.double(By), C.double(Px), C.double(Py)))
+	return int(C.GEOSOrientationIndex_r(c.handle, C.double(ax), C.double(ay), C.double(bx), C.double(by), C.double(px), C.double(py)))
 }
 
 // Polygonize returns a set of geometries which contains linework that
@@ -344,7 +343,7 @@ func (c *Context) RelatePatternMatch(mat, pat string) bool {
 }
 
 // SegmentIntersection returns the coordinate where two lines intersect.
-func (c *Context) SegmentIntersection(ax0, ay0, ax1, ay1, bx0, by0, bx1, by1 float64) (float64, float64, bool) {
+func (c *Context) SegmentIntersection(ax0, ay0, ax1, ay1, bx0, by0, bx1, by1 float64) (x, y float64, intersection bool) {
 	c.Lock()
 	defer c.Unlock()
 	var cx, cy float64
@@ -367,15 +366,16 @@ func (c *Context) cGeomsLocked(geoms []*Geom) (**C.struct_GEOSGeom_t, func()) {
 	}
 	uniqueContexts := map[*Context]struct{}{c: {}}
 	var extraContexts []*Context
-	cGeoms := make([]*C.struct_GEOSGeom_t, 0, len(geoms))
-	for _, geom := range geoms {
+	cGeoms := make([]*C.struct_GEOSGeom_t, len(geoms))
+	for i := range cGeoms {
+		geom := geoms[i]
 		geom.mustNotBeDestroyed()
 		if _, ok := uniqueContexts[geom.context]; !ok {
 			geom.context.Lock()
 			uniqueContexts[geom.context] = struct{}{}
 			extraContexts = append(extraContexts, geom.context)
 		}
-		cGeoms = append(cGeoms, geom.geom)
+		cGeoms[i] = geom.geom
 	}
 	return &cGeoms[0], func() {
 		for i := len(extraContexts) - 1; i >= 0; i-- {
@@ -423,7 +423,7 @@ func (c *Context) newBufParams(p *C.struct_GEOSBufParams_t) *BufferParams {
 	return bufParams
 }
 
-func (c *Context) newCoordSeq(gs *C.struct_GEOSCoordSeq_t, finalizer func(*CoordSeq)) *CoordSeq {
+func (c *Context) newCoordSeqInternal(gs *C.struct_GEOSCoordSeq_t, finalizer func(*CoordSeq)) *CoordSeq {
 	if gs == nil {
 		return nil
 	}
@@ -474,10 +474,10 @@ func (c *Context) newCoordsFromGEOSCoordSeq(s *C.struct_GEOSCoordSeq_t) [][]floa
 	if C.GEOSCoordSeq_copyToBuffer_r(c.handle, s, (*C.double)(&flatCoords[0]), hasZ, hasM) == 0 {
 		panic(c.err)
 	}
-	coords := make([][]float64, 0, size)
-	for i := 0; i < int(size); i++ {
+	coords := make([][]float64, size)
+	for i := range coords {
 		coord := flatCoords[i*int(dimensions) : (i+1)*int(dimensions) : (i+1)*int(dimensions)]
-		coords = append(coords, coord)
+		coords[i] = coord
 	}
 	return coords
 }
@@ -493,9 +493,10 @@ func (c *Context) newGEOSCoordSeqFromCoords(coords [][]float64) *C.struct_GEOSCo
 		hasM = 1
 	}
 
-	flatCoords := make([]float64, 0, len(coords)*len(coords[0]))
-	for _, coord := range coords {
-		flatCoords = append(flatCoords, coord...)
+	dimensions := len(coords[0])
+	flatCoords := make([]float64, len(coords)*dimensions)
+	for i, coord := range coords {
+		copy(flatCoords[i*dimensions:(i+1)*dimensions], coord)
 	}
 	return C.GEOSCoordSeq_copyFromBuffer_r(c.handle, (*C.double)(unsafe.Pointer(&flatCoords[0])), C.uint(len(coords)), hasZ, hasM)
 }
@@ -537,7 +538,7 @@ func (c *Context) newNonNilCoordSeq(s *C.struct_GEOSCoordSeq_t) *CoordSeq {
 	if s == nil {
 		panic(c.err)
 	}
-	return c.newCoordSeq(s, (*CoordSeq).Destroy)
+	return c.newCoordSeqInternal(s, (*CoordSeq).Destroy)
 }
 
 func (c *Context) newNonNilGeom(geom *C.struct_GEOSGeom_t, parent *Geom) *Geom {
