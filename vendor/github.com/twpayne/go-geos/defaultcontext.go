@@ -83,9 +83,14 @@ func NewPointFromXY(x, y float64) *Geom {
 	return DefaultContext.NewPointFromXY(x, y)
 }
 
-// NewPolygon returns a new point populated with coordss.
+// NewPolygon returns a new polygon populated with coordss.
 func NewPolygon(coordss [][][]float64) *Geom {
 	return DefaultContext.NewPolygon(coordss)
+}
+
+// NewSTRtree returns a new STRtree with the given number of entries per node.
+func NewSTRtree(nodeCapacity int) *STRtree {
+	return DefaultContext.NewSTRtree(nodeCapacity)
 }
 
 // Polygonize returns a set of geometries which contains linework that
