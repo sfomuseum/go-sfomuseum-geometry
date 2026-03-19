@@ -49,7 +49,7 @@ func UnionFeatures(ctx context.Context, features ...*geojson.Feature) (*geojson.
 		return nil, fmt.Errorf("Failed to derive Orb geometry for new geometry, %w", err)
 	}
 
-	new_props := map[string]interface{}{
+	new_props := map[string]any{
 		"hello": "world",
 	}
 
@@ -119,7 +119,7 @@ func UnionFeatureCollection(ctx context.Context, cols ...*geojson.FeatureCollect
 		return nil, err
 	}
 
-	new_props := map[string]interface{}{
+	new_props := map[string]any{
 		"hello": "world",
 	}
 
