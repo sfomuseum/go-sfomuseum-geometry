@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"log/slog"
 
-	"github.com/paulmach/orb/geojson"
 	_ "github.com/twpayne/go-geos"
+
+	"github.com/paulmach/orb/geojson"
 )
 
 // UnionFeatures returns a `geojson.Feature` instance representing the union of all the features in 'features'
@@ -100,6 +101,11 @@ func UnionFeatureCollection(ctx context.Context, cols ...*geojson.FeatureCollect
 		}
 
 		g := new_geom.Union(geos_g)
+
+		if g == nil {
+			slog.Error("Failed to union geometry, skipping", "offset", idx)
+			continue
+		}
 
 		t := g.Type()
 

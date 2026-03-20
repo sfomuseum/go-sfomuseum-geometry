@@ -41,7 +41,7 @@ func featureCollection(path string) (*geojson.FeatureCollection, error) {
 		fc = new(geojson.FeatureCollection)
 		fc.Append(f)
 	}
-	
+
 	return fc, nil
 }
 
