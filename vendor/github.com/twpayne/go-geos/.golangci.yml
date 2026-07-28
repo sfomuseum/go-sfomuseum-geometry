@@ -1,18 +1,23 @@
 version: '2'
 run:
-  go: '1.24'
+  go: '1.25'
 linters:
   enable:
+  - arangolint
+  - asasalint
   - asciicheck
   - bidichk
   - bodyclose
   - canonicalheader
+  - clickhouselint
   - containedctx
+  - contextcheck
   - copyloopvar
   - decorder
   - dogsled
   - dupword
   - durationcheck
+  - embeddedstructfieldcheck
   - err113
   - errchkjson
   - errname
@@ -22,12 +27,16 @@ linters:
   - forbidigo
   - forcetypeassert
   - funcorder
+  - ginkgolinter
   - gocheckcompilerdirectives
   - gochecksumtype
   - gocritic
+  - godoclint
   - godot
-  - gomodguard
+  - gomoddirectives
+  - gomodguard_v2
   - goprintffuncname
+  - gosec
   - gosmopolitan
   - grouper
   - iface
@@ -35,12 +44,16 @@ linters:
   - inamedparam
   - interfacebloat
   - intrange
+  - iotamixing
   - loggercheck
   - makezero
   - mirror
   - misspell
+  - modernize
+  - musttag
   - nilerr
   - nilnesserr
+  - nilnil
   - noctx
   - nolintlint
   - nosprintfhostport
@@ -63,22 +76,19 @@ linters:
   - thelper
   - unconvert
   - unparam
+  - unqueryvet
   - usestdlibvars
   - usetesting
   - wastedassign
   - whitespace
   - zerologlint
   disable:
-  - arangolint
-  - asasalint
-  - contextcheck
   - cyclop
   - depguard
   - dupl
   - exhaustive
   - exhaustruct
   - funlen
-  - ginkgolinter
   - gochecknoglobals
   - gochecknoinits
   - gocognit
@@ -86,16 +96,15 @@ linters:
   - gocyclo
   - godox
   - goheader
-  - gomoddirectives
-  - gosec
   - ireturn
   - lll
   - maintidx
-  - musttag
+  - mnd
   - nakedret
   - nestif
   - nilnil
   - nlreturn
+  - noinlineerr
   - nonamedreturns
   - paralleltest
   - recvcheck
@@ -103,7 +112,6 @@ linters:
   - tparallel
   - varnamelen
   - wrapcheck
-  - wsl
   - wsl_v5
   settings:
     forbidigo:
@@ -137,6 +145,8 @@ linters:
       - name: cognitive-complexity
         disabled: true
       - name: cyclomatic
+        disabled: true
+      - name: deep-exit
         disabled: true
       - name: empty-block
         disabled: true

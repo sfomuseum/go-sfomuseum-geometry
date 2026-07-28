@@ -5,6 +5,11 @@ package geos
 // #include "go-geos.h"
 import "C"
 
+import (
+	"cmp"
+	"fmt"
+)
+
 // Version.
 const (
 	VersionMajor = C.GEOS_VERSION_MAJOR
@@ -95,24 +100,32 @@ type MakeValidCollapsed int
 // MakeValidMethods.
 const (
 	MakeValidDiscardCollapsed MakeValidCollapsed = 0
-	MakeValidKeepCollapsed    MakeValidCollapsed = 1
+	MakeValidKeepCollapsed    MakeValidCollapsed = C.GEOS_PREC_KEEP_COLLAPSED
+)
+
+type VoronoiDiagramFlag int
+
+// Voronoi diagram flags.
+const (
+	VoronoiDiagramFlagOnlyEdges     VoronoiDiagramFlag = C.GEOS_VORONOI_ONLY_EDGES
+	VoronoiDiagramFlagPreserveOrder VoronoiDiagramFlag = C.GEOS_VORONOI_PRESERVE_ORDER
 )
 
 // VersionCompare returns a negative number if the GEOS version is less than the
 // given major.minor.patch version, zero if it is equal, or a positive number
 // otherwise.
 func VersionCompare(major, minor, patch int) int {
-	if majorDelta := VersionMajor - major; majorDelta != 0 {
-		return majorDelta
-	}
-	if minorDelta := VersionMinor - minor; minorDelta != 0 {
-		return minorDelta
-	}
-	return VersionPatch - patch
+	return cmp.Or(VersionMajor-major, VersionMinor-minor, VersionPatch-patch)
 }
 
 type intType interface {
 	~int | ~int8 | ~int16 | ~int32 | ~int64 | ~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr
+}
+
+func init() {
+	if VersionCompare(3, 12, 0) < 0 {
+		panic(fmt.Sprintf("unsupported GEOS version %d.%d.%d", VersionMajor, VersionMinor, VersionPatch))
+	}
 }
 
 func toInt[T intType](b bool) T { //nolint:ireturn

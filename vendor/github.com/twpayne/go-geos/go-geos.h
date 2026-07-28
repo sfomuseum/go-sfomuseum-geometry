@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 
-#define GEOS_USE_ONLY_R_API
 #include <geos_c.h>
 
 uintptr_t c_GEOSGeom_getUserData_r(GEOSContextHandle_t handle,
@@ -30,34 +29,5 @@ GEOSGeometry *c_GEOSMakeValidWithParams_r(GEOSContextHandle_t handle,
                                           const GEOSGeometry *g,
                                           enum GEOSMakeValidMethods method,
                                           int keepCollapsed);
-
-#if GEOS_VERSION_MAJOR < 3 ||                                                  \
-    (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 11)
-
-GEOSGeometry *GEOSConcaveHull_r(GEOSContextHandle_t handle,
-                                const GEOSGeometry *g, double ratio,
-                                unsigned int allowHoles);
-
-#endif
-
-#if GEOS_VERSION_MAJOR < 3 ||                                                  \
-    (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 12)
-
-GEOSGeometry *GEOSConcaveHullByLength_r(GEOSContextHandle_t handle,
-                                        const GEOSGeometry *g, double ratio,
-                                        unsigned int allowHoles);
-
-char GEOSPreparedContainsXY_r(GEOSContextHandle_t handle,
-                              const GEOSPreparedGeometry *pg1, double x,
-                              double y);
-
-char GEOSPreparedIntersectsXY_r(GEOSContextHandle_t handle,
-                                const GEOSPreparedGeometry *pg1, double x,
-                                double y);
-
-GEOSGeometry *GEOSDisjointSubsetUnion_r(GEOSContextHandle_t handle,
-                                        const GEOSGeometry *g);
-
-#endif
 
 #endif
